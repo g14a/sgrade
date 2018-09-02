@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 )
 
 func main() {
@@ -15,20 +14,14 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	start := time.Now()
-
 	for i := 0; i <= 200000; i++ {
 		wg.Add(1)
 		go filter(mainChannel, primeChannel, &wg)
 	}
 
-	elapsed := time.Since(start)
-
 	for i := range primeChannel {
 		fmt.Println(i)
 	}
-
-	fmt.Println(elapsed)
 
 	close(primeChannel)
 }
