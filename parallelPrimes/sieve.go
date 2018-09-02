@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	n := 200000
+	n := 255000
 
 	for i := 0; i < n; i++ {
 		if isPrime(i) {

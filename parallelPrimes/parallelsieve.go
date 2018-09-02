@@ -8,23 +8,25 @@ import (
 func main() {
 	mainChannel := make(chan int)
 
-	go Generate(mainChannel, 1000)
+	go Generate(mainChannel, 2000)
 
 	primeChannel := make(chan int)
 
 	var wg sync.WaitGroup
 
-	for i := 2; i <= 1000; i++ {
+	for i := 2; i <= 2000; i++ {
 		wg.Add(1)
 		go filter(mainChannel, primeChannel, &wg)
 	}
 
 	for {
-		i := <-primeChannel
-		fmt.Println(i)
+		i, more := <-primeChannel
+		if more {
+			fmt.Println(i)
+		} else {
+			fmt.Println()
+		}
 	}
-
-	close(primeChannel)
 }
 
 func isPrime(n int) bool {
