@@ -9,7 +9,7 @@ import (
 func main() {
 	mainChannel := make(chan int)
 
-	go Generate(mainChannel, 100)
+	go Generate(mainChannel, 200000)
 
 	primeChannel := make(chan int)
 
@@ -17,7 +17,7 @@ func main() {
 
 	start := time.Now()
 
-	for i := 0; i <= 100; i++ {
+	for i := 0; i <= 200000; i++ {
 		wg.Add(1)
 		go filter(mainChannel, primeChannel, &wg)
 	}
@@ -28,9 +28,9 @@ func main() {
 		fmt.Println(i)
 	}
 
-	close(primeChannel)
-
 	fmt.Println(elapsed)
+
+	close(primeChannel)
 }
 
 func isPrime(n int) bool {
