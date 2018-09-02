@@ -5,18 +5,11 @@ import (
 )
 
 func main() {
-	n := 2000
+	n := 100000
 
-	count := 0
-
-	for i := 0; ; i++ {
+	for i := 0; i < n; i++ {
 		if isPrime(i) {
 			fmt.Println(i)
-			count++
-		}
-
-		if count == n {
-			break
 		}
 	}
 }
@@ -26,7 +19,7 @@ func isPrime(n int) bool {
 		return false
 	}
 
-	for i := 2; i < n; i++ {
+	for i := 2; i <= n/2; i++ {
 		if n%i == 0 {
 			return false
 		}
