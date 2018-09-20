@@ -8,13 +8,14 @@ import (
 func main() {
 	mainChannel := make(chan int)
 
-	go Generate(mainChannel, 2000)
+	n := 530000
+	go Generate(mainChannel, n)
 
 	primeChannel := make(chan int)
 
 	var wg sync.WaitGroup
 
-	for i := 2; i <= 2000; i++ {
+	for i := 2; i <= n; i++ {
 		wg.Add(1)
 		go filter(mainChannel, primeChannel, &wg)
 	}
