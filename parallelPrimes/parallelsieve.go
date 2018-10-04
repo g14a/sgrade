@@ -19,15 +19,18 @@ func main() {
 		wg.Add(1)
 		go filter(mainChannel, primeChannel, &wg)
 	}
+	count := 0
 
 	for {
 		i, more := <-primeChannel
 		if more {
 			fmt.Println(i)
+			count++
 		} else {
 			fmt.Println()
 		}
 	}
+	fmt.Println(count)
 }
 
 func isPrime(n int) bool {
