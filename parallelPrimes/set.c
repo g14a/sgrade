@@ -34,7 +34,7 @@ int main()
       set[i] = i;
     } 
 
-    printPowerSet(set, 20); 
+    printPowerSet(set, 30); 
 
     return 0; 
 }
