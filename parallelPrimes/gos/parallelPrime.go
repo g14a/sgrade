@@ -12,7 +12,9 @@ func main() {
 
 	mainChannel := make(chan int)
 
+
 	n := 10
+
 	go Generate(mainChannel, n)
 
 	primeChannel := make(chan int)
@@ -51,6 +53,7 @@ func main() {
 
 func PerfectPowers(primes []int, maxPower int) []string {
 	perfectPowers := make([]string, 0)
+
 	primebuf := make([]int, 0)
 
 	for elem := range primes {
@@ -69,11 +72,6 @@ func PerfectPowers(primes []int, maxPower int) []string {
 			for power := 2; power < maxPower+1; power++ {
 				if isPower(sum, power) {
 					s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(elem), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(getNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
-					perfectPowers = append(perfectPowers, s)
-				}
-			}
-		}
-	}
 
 	return perfectPowers
 }
@@ -107,8 +105,8 @@ func Generate(ch chan<- int, thresh int) {
 }
 
 func isPower(i, base int) bool {
-	diff := math.Mod(math.Pow(float64(i), 1/float64(base)), 1)
 
+	diff := math.Mod(math.Pow(float64(i), 1/float64(base)), 1)
 	return diff == 0.0 || diff > 0.9999999
 }
 
