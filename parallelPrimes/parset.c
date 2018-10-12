@@ -15,7 +15,7 @@ long double printPowerSet(int *set, int set_size)
 #pragma omp parallel for
     for(counter = 0; counter < pow_set_size; counter++) 
     {
-	#pragma omp parallel for	
+
       for(j = 0; j < set_size; j++) 
        { 
           /* Check if jth bit in the counter is set 
@@ -40,7 +40,7 @@ int main()
       set[i] = i;
     } 
 
-    long double t = printPowerSet(set, 20); 
+    long double t = printPowerSet(set, 50); 
 
     printf("%Lf", t);
     return 0; 

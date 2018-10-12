@@ -28,7 +28,6 @@ func main() {
 
 	wg.Wait()
 	close(primeChannel)
-
 }
 
 func isPrime(n int) bool {
