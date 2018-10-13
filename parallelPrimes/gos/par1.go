@@ -5,7 +5,6 @@ import (
 	"math"
 	"strconv"
 	"sync"
-	"time"
 	"sort"
 )
 
@@ -13,21 +12,18 @@ func main() {
 
 	mainChannel := make(chan int)
 
-	n := 100
+	n := 40
 
 	go Generate(mainChannel, n)
 
 	primeChannel := make(chan int)
 
-	var wg sync.WaitGroup
-
+	var wg,pwg sync.WaitGroup
 	primes := make([]int, 0)
 
-	start := time.Now()
 	go func() {
 		for i := range primeChannel {
-			//primes = append(primes, i)
-			fmt.Println(i)
+			primes = append(primes, i)
 		}
 	}()
 
@@ -39,20 +35,38 @@ func main() {
 	wg.Wait()
 	close(primeChannel)
 
-	fmt.Println(time.Since(start))
 	sort.Ints(primes)
+	
+	max := 5
+	
+	sortedPrime := make(chan int)
 
-	max := 10
+	for i:=0;i<len(primes);i++ {
+		pwg.Add(1)
+		go PerfectPowers(sortedPrime, max, &pwg)
+	}
 
+	for i:=0;i<len(primes);i++ {
+		sortedPrime <- primes[i]
+	}
+
+	close(sortedPrime)
+	pwg.Wait()
 
 }
 
-func PerfectPowers(primes []int, maxPower int) {
-	perfectPowers := make([]string, 0)
+func PerfectPowers(primeChannel chan int, maxPower int, wg *sync.WaitGroup) {
+
+	defer wg.Done()
 	primebuf := make([]int, 0)
 
-	for elem := range primes {
-		primebuf = append(primebuf, primes[elem])
+	for {
+		value, ok := <-primeChannel
+		if !ok {
+			break
+		}
+
+		primebuf = append(primebuf, value)
 
 		for index := 0; index < len(primebuf); index++ {
 			prime := primebuf[index]
@@ -62,17 +76,16 @@ func PerfectPowers(primes []int, maxPower int) {
 				sum += primebuf[i]
 			}
 
-			for power := 2; power < maxPower+1; power++ {
+			for power := 2; power <= maxPower; power++ {
 				if isPower(sum, power) {
-					s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(primes[elem]), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(getNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
-					perfectPowers = append(perfectPowers, s)
+					s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(value), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(getNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
+					fmt.Println(s)
 				}
 			}
 		}
 	}
-
 }
-	
+
 func isPrime(n int) bool {
 	if n <= 1 {
 		return false

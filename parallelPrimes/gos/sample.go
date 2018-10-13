@@ -1,26 +1,69 @@
 package main
 
 import (
-	"math"
 	"fmt"
+	"sync"
+	"strconv"
+	"math"
 )
 
+var waitGroup sync.WaitGroup
+
 func main() {
-	fmt.Println(rev(124, 3))
-}
+	fmt.Println("Starting the application...")
+	data := make(chan int)
 
-func isPower(num, base int) bool {
-	k := math.Log(float64(num)) / math.Log(float64(base))
+	array := []int{2, 3, 5, 7, 11, 13, 17, 19}
 
-	t := math.Abs(k - math.Round(k))
-
-	if t < 0.0000001 {
-		return true
+	for i := 0; i < 3; i++ {
+		waitGroup.Add(1)
+		go worker(data, 4)
 	}
-	return false
+
+	for i := 0; i < len(array); i++ {
+		data <- array[i]
+	}
+
+	close(data)
+
+	waitGroup.Wait()
 }
 
-func rev(num, power int) bool {
+func worker(data chan int, maxpower int) {
+	defer func() {
+		waitGroup.Done()
+	}()
+
+	primebuf := make([]int, 0)
+
+	for {
+		value, ok := <-data
+
+		if !ok {
+			break
+		}
+
+		primebuf = append(primebuf, value)
+
+		for index := 0; index < len(primebuf); index++ {
+			prime := primebuf[index]
+			sum := 0
+
+			for i := index; i < len(primebuf); i++ {
+				sum += primebuf[i]
+			}
+
+			for power := 2; power <= maxpower; power++ {
+				if isPower(sum, power) {
+					s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(value), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(getNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
+					fmt.Println(s)
+				}
+			}
+		}
+	}
+}
+
+func isPower(num, power int) bool {
 	err := math.Pow(float64(num), 1/float64(power))
 
 	t := math.Abs(err - math.Round(err))
@@ -29,4 +72,10 @@ func rev(num, power int) bool {
 		return true
 	}
 	return false
+}
+
+func getNthroot(a, b int) int {
+	s := math.Pow(float64(a), 1/float64(b))
+
+	return int(math.Round(s))
 }
