@@ -66,10 +66,12 @@ func PerfectPowers(primes []int, maxPower int, fp *os.File) {
 
 	for elem := range primes {
 		primebuf = append(primebuf, primes[elem])
+		dep := primes[elem]
 
 		for index := 0; index < len(primebuf); index++ {
 			prime := primebuf[index]
 			sum := 0
+			t := dep
 
 			for i := index; i < len(primebuf); i++ {
 				sum += primebuf[i]
@@ -82,7 +84,8 @@ func PerfectPowers(primes []int, maxPower int, fp *os.File) {
 				defer wg.Done()
 				for power := 2; power <= maxPower; power++ {
 					if helpers.IsPower(sum, power) {
-						s := strconv.Itoa(prime) + ":" + strconv.Itoa(primes[elem]) + " = " + strconv.Itoa(sum) + " = " + strconv.Itoa(helpers.GetNthroot(sum, power)) + "**" + strconv.Itoa(power)
+						fmt.Println(sum)
+						s := strconv.Itoa(prime) + ":" + strconv.Itoa(t) + " = " + strconv.Itoa(sum) + " = " + strconv.Itoa(helpers.GetNthroot(sum, power)) + "**" + strconv.Itoa(power)
 						io.WriteString(fp, s+"\n")
 					}
 				}
