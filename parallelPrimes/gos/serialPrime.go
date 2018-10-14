@@ -11,22 +11,27 @@ import (
 )
 
 func main() {
-	n := 100000
+
+	args := os.Args
+	lower, _ := strconv.ParseInt(args[1], 10, 64)
+	upper, _ := strconv.ParseInt(args[2], 10, 64)
+	maxPower, _ := strconv.ParseInt(args[3], 10, 64)
+	fileArg := args[4]
+
 	primes := make([]int, 0)
 
 	start := time.Now()
 
-	for i := 0; i < n; i++ {
+	for i := int(lower); i <= int(upper); i++ {
 		if IsPrime(i) {
 			primes = append(primes, i)
 		}
 	}
 
-	file := helpers.FileCreate("file.txt")
+	file := helpers.FileCreate(fileArg)
 	defer file.Close()
 
-	maxPower := 20
-	PerfectPowers(primes, maxPower, file)
+	PerfectPowers(primes, int(maxPower), file)
 
 	fmt.Println(time.Since(start))
 

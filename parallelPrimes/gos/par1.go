@@ -16,7 +16,6 @@ func main() {
 
 	mainChannel := make(chan int)
 	primeChannel := make(chan int)
-	//sortedPrime := make(chan int)
 
 	var wg, pwg sync.WaitGroup
 	primes := make([]int, 0)
@@ -26,8 +25,6 @@ func main() {
 	upper, _ := strconv.ParseInt(args[2], 10, 64)
 	maxPower, _ := strconv.ParseInt(args[3], 10, 64)
 	fileArg := args[4]
-
-	fmt.Println(lower, upper, maxPower, fileArg)
 
 	file := helpers.FileCreate(fileArg)
 	defer file.Close()
@@ -85,7 +82,7 @@ func PerfectPowers(primes []int, maxPower int, fp *os.File) {
 				defer wg.Done()
 				for power := 2; power <= maxPower; power++ {
 					if helpers.IsPower(sum, power) {
-						s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(primes[elem]), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(helpers.GetNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
+						s := strconv.Itoa(prime) + ":" + strconv.Itoa(primes[elem]) + " = " + strconv.Itoa(sum) + " = " + strconv.Itoa(helpers.GetNthroot(sum, power)) + "**" + strconv.Itoa(power)
 						io.WriteString(fp, s+"\n")
 					}
 				}
