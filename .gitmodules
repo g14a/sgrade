@@ -1,3 +1,0 @@
-[submodule "parallelPrimes/parallelPrimes/rust-prime-sample"]
-	path = parallelPrimes/parallelPrimes/rust-prime-sample
-	url = https://www.github.com/munukutla/rust-prime-sample
