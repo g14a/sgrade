@@ -29,8 +29,8 @@ func Filter(in <-chan int, out chan<- int, wg *sync.WaitGroup) {
 	}
 }
 
-func Generate(ch chan<- int, thresh int) {
-	for i := 2; i <= thresh; i++ {
+func Generate(start int, ch chan<- int, thresh int) {
+	for i := start; i <= thresh; i++ {
 		ch <- i
 	}
 }

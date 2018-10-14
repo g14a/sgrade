@@ -21,14 +21,20 @@ func main() {
 	var wg, pwg sync.WaitGroup
 	primes := make([]int, 0)
 
-	n := 100000
+	args := os.Args
+	lower, _ := strconv.ParseInt(args[1], 10, 64)
+	upper, _ := strconv.ParseInt(args[2], 10, 64)
+	maxPower, _ := strconv.ParseInt(args[3], 10, 64)
+	fileArg := args[4]
 
-	file := helpers.FileCreate("file.txt")
+	fmt.Println(lower, upper, maxPower, fileArg)
+
+	file := helpers.FileCreate(fileArg)
 	defer file.Close()
 
 	start := time.Now()
 
-	go helpers.Generate(mainChannel, n)
+	go helpers.Generate(int(lower), mainChannel, int(upper))
 
 	go func() {
 		for i := range primeChannel {
@@ -37,7 +43,7 @@ func main() {
 		}
 	}()
 
-	for i := 2; i <= n; i++ {
+	for i := int(lower); i <= int(upper); i++ {
 		wg.Add(1)
 		go helpers.Filter(mainChannel, primeChannel, &wg)
 	}
@@ -51,8 +57,7 @@ func main() {
 
 	again := time.Now()
 
-	maxPower := 20
-	PerfectPowers(primes, maxPower, file)
+	PerfectPowers(primes, int(maxPower), file)
 
 	pwg.Wait()
 
