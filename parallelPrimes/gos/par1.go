@@ -36,7 +36,6 @@ func main() {
 	go func() {
 		for i := range primeChannel {
 			primes = append(primes, i)
-			//fmt.Println(i)
 		}
 	}()
 
@@ -56,9 +55,10 @@ func main() {
 
 	PerfectPowers(primes, int(maxPower), file)
 
+	done := time.Since(again)
 	pwg.Wait()
 
-	fmt.Println(end + time.Since(again))
+	fmt.Println(end + done)
 }
 
 func PerfectPowers(primes []int, maxPower int, fp *os.File) {
