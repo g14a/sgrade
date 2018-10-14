@@ -5,6 +5,9 @@ import (
 	"sync"
 	"strconv"
 	"math"
+	"os"
+	"log"
+	"io"
 )
 
 var waitGroup sync.WaitGroup
@@ -13,11 +16,18 @@ func main() {
 	fmt.Println("Starting the application...")
 	data := make(chan int)
 
-	array := []int{2, 3, 5, 7, 11, 13, 17, 19}
+	file, err := os.Create("file.txt")
+	if err != nil {
+		log.Fatal("Cannot create file.", err)
+	}
+
+	defer file.Close()
+
+	array := []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29}
 
 	for i := 0; i < 3; i++ {
 		waitGroup.Add(1)
-		go worker(data, 4)
+		go worker(data, 4, file)
 	}
 
 	for i := 0; i < len(array); i++ {
@@ -29,7 +39,7 @@ func main() {
 	waitGroup.Wait()
 }
 
-func worker(data chan int, maxpower int) {
+func worker(data chan int, maxpower int, fp *os.File) {
 	defer func() {
 		waitGroup.Done()
 	}()
@@ -56,7 +66,7 @@ func worker(data chan int, maxpower int) {
 			for power := 2; power <= maxpower; power++ {
 				if isPower(sum, power) {
 					s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(value), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(getNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
-					fmt.Println(s)
+					io.WriteString(fp, s+"\n")
 				}
 			}
 		}

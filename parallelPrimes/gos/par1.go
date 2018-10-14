@@ -2,71 +2,68 @@ package main
 
 import (
 	"fmt"
-	"math"
+	"io"
+	"os"
+	"sort"
 	"strconv"
 	"sync"
-	"sort"
+	"time"
+
+	"github.com/sgrade/parallelPrimes/gos/helpers"
 )
 
 func main() {
 
 	mainChannel := make(chan int)
-
-	n := 40
-
-	go Generate(mainChannel, n)
-
 	primeChannel := make(chan int)
+	//sortedPrime := make(chan int)
 
-	var wg,pwg sync.WaitGroup
+	var wg, pwg sync.WaitGroup
 	primes := make([]int, 0)
+
+	n := 50000
+
+	file := helpers.FileCreate("file.txt")
+	defer file.Close()
+
+	start := time.Now()
+
+	go helpers.Generate(mainChannel, n)
 
 	go func() {
 		for i := range primeChannel {
 			primes = append(primes, i)
+			//fmt.Println(i)
 		}
 	}()
 
 	for i := 2; i <= n; i++ {
 		wg.Add(1)
-		go filter(mainChannel, primeChannel, &wg)
+		go helpers.Filter(mainChannel, primeChannel, &wg)
 	}
+
+	end := time.Since(start)
 
 	wg.Wait()
 	close(primeChannel)
 
 	sort.Ints(primes)
-	
-	max := 5
-	
-	sortedPrime := make(chan int)
 
-	for i:=0;i<len(primes);i++ {
-		pwg.Add(1)
-		go PerfectPowers(sortedPrime, max, &pwg)
-	}
+	again := time.Now()
 
-	for i:=0;i<len(primes);i++ {
-		sortedPrime <- primes[i]
-	}
+	maxPower := 5
+	PerfectPowers(primes, maxPower, file)
 
-	close(sortedPrime)
 	pwg.Wait()
 
+	fmt.Println(end + time.Since(again))
 }
 
-func PerfectPowers(primeChannel chan int, maxPower int, wg *sync.WaitGroup) {
-
-	defer wg.Done()
+func PerfectPowers(primes []int, maxPower int, fp *os.File) {
 	primebuf := make([]int, 0)
 
-	for {
-		value, ok := <-primeChannel
-		if !ok {
-			break
-		}
-
-		primebuf = append(primebuf, value)
+	for elem := range primes {
+		primebuf = append(primebuf, primes[elem])
 
 		for index := 0; index < len(primebuf); index++ {
 			prime := primebuf[index]
@@ -76,57 +73,18 @@ func PerfectPowers(primeChannel chan int, maxPower int, wg *sync.WaitGroup) {
 				sum += primebuf[i]
 			}
 
-			for power := 2; power <= maxPower; power++ {
-				if isPower(sum, power) {
-					s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(value), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(getNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
-					fmt.Println(s)
+			var wg sync.WaitGroup
+
+			go func(wg *sync.WaitGroup) {
+				wg.Add(1)
+				defer wg.Done()
+				for power := 2; power <= maxPower; power++ {
+					if helpers.IsPower(sum, power) {
+						s := strconv.FormatInt(int64(prime), 10) + ":" + strconv.FormatInt(int64(primes[elem]), 10) + " = " + strconv.FormatInt(int64(sum), 10) + " = " + strconv.FormatInt(int64(helpers.GetNthroot(sum, power)), 10) + "**" + strconv.FormatInt(int64(power), 10)
+						io.WriteString(fp, s+"\n")
+					}
 				}
-			}
+			}(&wg)
 		}
 	}
-}
-
-func isPrime(n int) bool {
-	if n <= 1 {
-		return false
-	}
-
-	for i := 2; i <= n/2; i++ {
-		if n%i == 0 {
-			return false
-		}
-	}
-
-	return true
-}
-
-func filter(in <-chan int, out chan<- int, wg *sync.WaitGroup) {
-	defer wg.Done()
-	i := <-in
-	if isPrime(i) {
-		out <- i
-	}
-}
-
-func Generate(ch chan<- int, thresh int) {
-	for i := 2; i <= thresh; i++ {
-		ch <- i
-	}
-}
-
-func isPower(num, power int) bool {
-	err := math.Pow(float64(num), 1/float64(power))
-
-	t := math.Abs(err - math.Round(err))
-
-	if t < 0.0000001 {
-		return true
-	}
-	return false
-}
-
-func getNthroot(a, b int) int {
-	s := math.Pow(float64(a), 1/float64(b))
-
-	return int(math.Round(s))
 }

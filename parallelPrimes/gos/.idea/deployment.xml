@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="workstation">
+  <component name="PublishConfigData" autoUpload="Always" serverName="workstation" stopOnFirstError="true">
     <serverData>
       <paths name="workstation">
         <serverdata>
           <mappings>
-            <mapping deploy="/Downloads/project/sgrade/parallelPrimes/gos" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/iiitdm/go/src/github.com/parallelPrimes/gos" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

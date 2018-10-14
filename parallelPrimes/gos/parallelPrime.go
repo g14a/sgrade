@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"sync"
 	"time"
-	"sort"
 )
 
 func main() {
@@ -44,7 +44,6 @@ func main() {
 
 	max := 10
 
-
 }
 
 func PerfectPowers(primes []int, maxPower int) {
@@ -72,7 +71,7 @@ func PerfectPowers(primes []int, maxPower int) {
 	}
 
 }
-	
+
 func isPrime(n int) bool {
 	if n <= 1 {
 		return false
