@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gos/helpers"
+	"github.com/sgrade/parallelPrimes/gos/helpers"
 )
 
 func main() {
-	n := 50000
+	n := 100000
 	primes := make([]int, 0)
 
 	start := time.Now()
@@ -25,7 +25,7 @@ func main() {
 	file := helpers.FileCreate("file.txt")
 	defer file.Close()
 
-	maxPower := 5
+	maxPower := 20
 	PerfectPowers(primes, maxPower, file)
 
 	fmt.Println(time.Since(start))

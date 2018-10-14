@@ -21,7 +21,7 @@ func main() {
 	var wg, pwg sync.WaitGroup
 	primes := make([]int, 0)
 
-	n := 50000
+	n := 100000
 
 	file := helpers.FileCreate("file.txt")
 	defer file.Close()
@@ -51,7 +51,7 @@ func main() {
 
 	again := time.Now()
 
-	maxPower := 5
+	maxPower := 20
 	PerfectPowers(primes, maxPower, file)
 
 	pwg.Wait()
