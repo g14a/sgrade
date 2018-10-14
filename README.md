@@ -98,6 +98,9 @@ The parallelized part is mentioned here below.
 
 ## Performance Statistics
 
+[Google Sheet](https://docs.google.com/spreadsheets/d/1rveAjreGX7wRbsxuOXxaP0ev019E6vpmGh_rvNfQP6w/edit?usp=sharing)
+
+
 |Limit   | Power Limit | Serial Time in Sec |  Parallel Time in Secs |
 |--------|-------------|--------------------|------------------------|
 |20000	 |5	           |1.595569219         |      1.828454819       |
