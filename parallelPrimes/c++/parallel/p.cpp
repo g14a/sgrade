@@ -44,12 +44,10 @@ void PerfectPowers(vector<int> primes, int maxPower, ofstream &file) {
 
     for (vector<int>::iterator it = primes.begin(); it != primes.end(); ++it) {
         primebuf.push_back(*it);
-       // int dep = *it;
 
         for (int index=0; index < primebuf.size(); index++) {
             int prime = primebuf[index];
             int sum = 0;
-           // int t = dep;
 
             for (int i=index; i < primebuf.size(); i++) {
                 sum += primebuf[i];
@@ -66,15 +64,19 @@ void PerfectPowers(vector<int> primes, int maxPower, ofstream &file) {
     }
 }
 
-int main()
-{
-  // store the primes below 1000
-  std::vector<int> primes;
-  primesieve::generate_primes(100, &primes);
+int main(int argc, char **argv) {
 
-  ofstream file ("file.txt", ofstream::out);
+    int lowerBound = atoi(argv[1]);
+    int upperBound = atoi(argv[2]);
+    int maxPower = atoi(argv[3]);
+    string filename = argv[4];
 
-  PerfectPowers(primes, 5, file);
-  
-  return 0;
+    std::vector<int> primes;
+    primesieve::generate_primes(lowerBound, upperBound, &primes);
+
+    ofstream file (filename, ofstream::out);
+
+    PerfectPowers(primes, maxPower, file);
+    
+    return 0;
 }
