@@ -1,10 +1,10 @@
 package helpers
 
 import (
-	"math"
-	"sync"
-	"os"
 	"log"
+	"math"
+	"os"
+	"sync"
 )
 
 func IsPrime(n int) bool {
