@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <fstream>
+#include <omp.h>
 
 using namespace std;
 
@@ -37,7 +39,7 @@ int GetNthRoot(int a, int b) {
     return (int)round(s);
 }
 
-void PerfectPowers(vector<int> primes, int maxPower) {
+void PerfectPowers(vector<int> primes, int maxPower, ofstream &file) {
     vector<int> primebuf;
 
     for (vector<int>::iterator it = primes.begin(); it != primes.end(); ++it) {
@@ -53,13 +55,11 @@ void PerfectPowers(vector<int> primes, int maxPower) {
                 sum += primebuf[i];
             }
 
+        #pragma omp parallel for
             for (int power = 2; power <= maxPower; power++) {
-
-                // cout << "Sum = " << sum << " and power = " << power << endl;
                 if(IsPower(sum, power)) {
-
-                    string s = to_string(prime) + ":" + to_string(*it) + " = " + to_string(sum) + " = " + to_string(GetNthRoot(sum, power)) + "**" + to_string(power);
-                    cout << s << endl;
+                    string s = to_string(prime) + ":" + to_string(*it) + " = " + to_string(sum) + " = " + to_string(GetNthRoot(sum, power)) + "**" + to_string(power) + "\n";
+                    file << s;
                 }
             }
         }
@@ -70,9 +70,11 @@ int main()
 {
   // store the primes below 1000
   std::vector<int> primes;
-  primesieve::generate_primes(10000, &primes);
+  primesieve::generate_primes(100, &primes);
 
-  PerfectPowers(primes, 5);
+  ofstream file ("file.txt", ofstream::out);
+
+  PerfectPowers(primes, 5, file);
   
   return 0;
 }
