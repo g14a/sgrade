@@ -39,11 +39,13 @@ int GetNthRoot(int a, int b) {
     return (int)round(s);
 }
 
-void PerfectPowers(vector<int> primes, int maxPower, ofstream &file) {
+void PerfectPowers(vector<int> primes, int lower, int upper, int maxPower, ofstream &file) {
     vector<int> primebuf;
+    primesieve::iterator it;
+    int prime = it.next_prime();
 
-    for (vector<int>::iterator it = primes.begin(); it != primes.end(); ++it) {
-        primebuf.push_back(*it);
+    for (prime = lower; prime < upper; prime = it.next_prime()) {
+        primebuf.push_back(prime);
 
         for (int index=0; index < primebuf.size(); index++) {
             int prime = primebuf[index];
@@ -56,7 +58,7 @@ void PerfectPowers(vector<int> primes, int maxPower, ofstream &file) {
         #pragma omp parallel for
             for (int power = 2; power <= maxPower; power++) {
                 if(IsPower(sum, power)) {
-                    string s = to_string(prime) + ":" + to_string(*it) + " = " + to_string(sum) + " = " + to_string(GetNthRoot(sum, power)) + "**" + to_string(power) + "\n";
+                    string s = to_string(prime) + ":" + to_string(prime) + " = " + to_string(sum) + " = " + to_string(GetNthRoot(sum, power)) + "**" + to_string(power) + "\n";
                     file << s;
                 }
             }
@@ -76,7 +78,11 @@ int main(int argc, char **argv) {
 
     ofstream file (filename, ofstream::out);
 
-    PerfectPowers(primes, maxPower, file);
+    long double start = omp_get_wtime();
+
+    PerfectPowers(primes, lowerBound, upperBound, maxPower, file);
+
+    cout << omp_get_wtime() - start << endl;
     
     return 0;
 }
