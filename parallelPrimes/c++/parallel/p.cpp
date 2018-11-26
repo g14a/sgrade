@@ -44,11 +44,15 @@ void PerfectPowers(vector<int> primes, int lower, int upper, int maxPower, ofstr
     primesieve::iterator it;
     int prime = it.next_prime();
 
+    if(lower<=1) {
+        lower = 2;
+    }
+
     for (prime = lower; prime < upper; prime = it.next_prime()) {
         primebuf.push_back(prime);
 
         for (int index=0; index < primebuf.size(); index++) {
-            int prime = primebuf[index];
+            int primeelem = primebuf[index];
             int sum = 0;
 
             for (int i=index; i < primebuf.size(); i++) {
@@ -58,7 +62,7 @@ void PerfectPowers(vector<int> primes, int lower, int upper, int maxPower, ofstr
         #pragma omp parallel for
             for (int power = 2; power <= maxPower; power++) {
                 if(IsPower(sum, power)) {
-                    string s = to_string(prime) + ":" + to_string(prime) + " = " + to_string(sum) + " = " + to_string(GetNthRoot(sum, power)) + "**" + to_string(power) + "\n";
+                    string s = to_string(primeelem) + ":" + to_string(prime) + " = " + to_string(sum) + " = " + to_string(GetNthRoot(sum, power)) + "**" + to_string(power) + "\n";
                     file << s;
                 }
             }
@@ -74,7 +78,14 @@ int main(int argc, char **argv) {
     string filename = argv[4];
 
     std::vector<int> primes;
-    primesieve::generate_primes(lowerBound, upperBound, &primes);
+    // primesieve::generate_primes(lowerBound, upperBound, &primes);
+
+#pragma omp parallel for
+    for(int i=lowerBound;i<upperBound;i++) {
+        if(isPrime(i)) {
+            primes.push_back(i);
+        }
+    }
 
     ofstream file (filename, ofstream::out);
 
