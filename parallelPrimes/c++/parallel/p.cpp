@@ -78,14 +78,14 @@ int main(int argc, char **argv) {
     string filename = argv[4];
 
     std::vector<int> primes;
-    // primesieve::generate_primes(lowerBound, upperBound, &primes);
+    primesieve::generate_primes(lowerBound, upperBound, &primes);
 
-#pragma omp parallel for
-    for(int i=lowerBound;i<upperBound;i++) {
-        if(isPrime(i)) {
-            primes.push_back(i);
-        }
-    }
+// // #pragma omp parallel for
+//     for(int i=lowerBound;i<upperBound;i++) {
+//         if(isPrime(i)) {
+//             primes.push_back(i);
+//         }
+//     }
 
     ofstream file (filename, ofstream::out);
 
