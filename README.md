@@ -1,4 +1,4 @@
-# Intel Threading Challenge ( taken as S Grade )
+# Intel Threading Challenge ( taken as S Grade Challenge )
 
 ### Problem -> [Intel site thread](https://software.intel.com/en-us/forums/p1-a2-consecutive-primes)
 
